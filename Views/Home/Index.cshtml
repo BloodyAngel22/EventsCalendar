@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Event>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>EventsCalendar</title>
+	<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+	<link rel="stylesheet" href="./css/main.css">
+	<script src="./lib/jquery/dist/jquery.js"></script>
+</head>
+
+<body>
+	<button id="openFormButton">+</button>
+
+	<div id="popupFormContainer">
+		<div id="popupForm" style="display: none;">
+			<form class="form">
+				<button type="button" id="closeFormButton">x</button>
+				<input type="hidden" id="eventId">
+				<input type="text" id="eventName" placeholder="Название события" class="input" min="1" max="100"><br>
+				<input type="date" id="eventDate" placeholder="Дата" class="input-date"><br>
+				<input type="hidden" id="category" value="@Category.Work">
+				<select class="input" name="eventCategory" id="eventCategory">
+					<option value="@Category.Work" selected>@Category.Work</option>
+					<option value="@Category.HomeWork">@Category.HomeWork</option>
+					<option value="@Category.Personal">@Category.Personal</option>
+					<option value="@Category.Health">@Category.Health</option>
+					<option value="@Category.Holiday">@Category.Holiday</option>
+				</select>
+				<button type="button" id="addEvent">Добавить событие</button>
+				<button type="button" id="editEvent" style="display: none; margin-bottom: 10px">Изменить событие</button>
+				<button type="button" id="deleteEvent" style="display: none">Удалить событие</button>
+			</form>
+		</div>
+	</div>
+
+	<div id='calendar'></div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var calendarEl = document.getElementById('calendar');
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+				initialView: 'dayGridMonth',
+				events: [
+
+		@foreach (var ev in Model)
+		{
+			var eventDate = @ev.Date.ToString("yyyy-MM-dd") + "T12:00:00";
+			<text>{
+							id: '@ev.Id',
+							title: '@ev.Name',
+							start: '@eventDate',
+							allDay: true,
+							category: '@ev.Category',
+							color: '@Category.GetCategoryColor(ev.Category)'
+							},</text>
+		}
+				],
+				eventClick: function (info) {
+					var event = info.event;
+					var category = document.getElementById('category').value;
+
+					document.getElementById('eventId').value = event.id;
+					document.getElementById('eventName').value = event.title;
+					document.getElementById('eventDate').value = event.startStr;
+					document.getElementById('eventCategory').value = category;
+
+					if (document.getElementById('popupForm').style.display == 'none') {
+						document.getElementById('addEvent').style.display = 'none';
+						document.getElementById('editEvent').style.display = 'block';
+						document.getElementById('deleteEvent').style.display = 'block';
+						document.getElementById('popupForm').style.display = 'block';
+					}
+					else {
+						document.getElementById('addEvent').style.display = 'block';
+						document.getElementById('editEvent').style.display = 'none';
+						document.getElementById('deleteEvent').style.display = 'none';
+						document.getElementById('popupForm').style.display = 'none';
+					}
+				}
+			});
+			calendar.render();
+		});
+
+	</script>
+
+	<script src="./js/main.js"></script>
+</body>
+
+</html>

@@ -7,6 +7,7 @@ namespace EventsCalendar.Models
 		public const string Personal = "Личное";
 		public const string Health = "Здоровье";
 		public const string Holiday = "Праздники";
+		public static readonly List<string> Categories = new() { Work, HomeWork, Personal, Health, Holiday };
 
 		public static string GetCategoryColor(string category) 
 		{

@@ -20,19 +20,18 @@
 			<form class="form">
 				<button type="button" id="closeFormButton">x</button>
 				<input type="hidden" id="eventId">
-				<input type="text" id="eventName" placeholder="Название события" class="input" min="1" max="100"><br>
-				<input type="date" id="eventDate" placeholder="Дата" class="input-date"><br>
+				<textarea class="input input-text" name="eventName" id="eventName" cols="50" rows="2" placeholder="Название события" minlength="1" maxlength="100"></textarea>
+				<input type="date" id="eventDate" placeholder="Дата" class="input input-date"><br>
 				<input type="hidden" id="category" value="@Category.Work">
-				<select class="input" name="eventCategory" id="eventCategory">
-					<option value="@Category.Work" selected>@Category.Work</option>
-					<option value="@Category.HomeWork">@Category.HomeWork</option>
-					<option value="@Category.Personal">@Category.Personal</option>
-					<option value="@Category.Health">@Category.Health</option>
-					<option value="@Category.Holiday">@Category.Holiday</option>
+				<select class="input input-text" name="eventCategory" id="eventCategory">
+					@foreach (var category in Category.Categories)
+					{
+						<option value="@category">@category</option>
+					}
 				</select>
-				<button type="button" id="addEvent">Добавить событие</button>
-				<button type="button" id="editEvent" style="display: none; margin-bottom: 10px">Изменить событие</button>
-				<button type="button" id="deleteEvent" style="display: none">Удалить событие</button>
+				<button class="btn btn-primary" type="button" id="addEvent">Добавить событие</button>
+				<button class="btn btn-primary" type="button" id="editEvent" style="display: none;">Изменить событие</button>
+				<button class="btn btn-danger" type="button" id="deleteEvent" style="display: none">Удалить событие</button>
 			</form>
 		</div>
 	</div>
@@ -48,9 +47,10 @@
 		@foreach (var ev in Model)
 		{
 			var eventDate = @ev.Date.ToString("yyyy-MM-dd") + "T12:00:00";
+			var escapedTitle = @ConvertData.EscapeUnicode(ev.Name);
 			<text>{
 							id: '@ev.Id',
-							title: '@ev.Name',
+							title: '@escapedTitle',
 							start: '@eventDate',
 							allDay: true,
 							category: '@ev.Category',

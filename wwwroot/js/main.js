@@ -7,7 +7,6 @@ const eventCategoryInput = document.getElementById('eventCategory');
 function clearForm() {
 	eventNameInput.value = '';
 	eventDateInput.value = '';
-	eventCategoryInput.value = '';
 }
 
 function sendDataAndReload(url, data) {

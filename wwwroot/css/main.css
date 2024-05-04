@@ -1,3 +1,13 @@
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+input[type="text"] {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
 #popupFormContainer {
 	height: 100%;
 	top: 0;
@@ -11,7 +21,7 @@
   left: 50%;
 	transform: translate(-50%, -50%);
   background-color: #fff;
-  padding: 60px;
+  padding: 55px;
   border: 1px solid #ccc;
   border-radius: 5px;
 	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -45,21 +55,18 @@
 .input {
 	margin-bottom: 10px;
 	width: 100%;
-	padding: 10px 120px 10px 10px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	box-sizing: border-box;
 	text-align: left;
 }
 
+.input-text {
+	padding: 10px 10px;
+}
+
 .input-date {
-	margin-bottom: 10px;
-	width: 100%;
 	padding: 10px ;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	box-sizing: border-box;
-	text-align: left;
 }
 
 #closeFormButton {
@@ -79,4 +86,12 @@
 :root {
   --fc-border-color: black;
   --fc-daygrid-event-dot-width: 5px;
+}
+
+button {
+	margin-bottom: 10px;
+}
+
+textarea {
+	resize: none;
 }

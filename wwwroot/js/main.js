@@ -24,6 +24,7 @@ function sendDataAndReload(url, data) {
 
 openFormButton.addEventListener('click', function () {
 	if (popupForm.style.display === 'none') {
+		document.getElementById('eventCategory').value = document.getElementById('category').value;
 		popupForm.style.display = 'block';
 	} else {
 		popupForm.style.display = 'none';

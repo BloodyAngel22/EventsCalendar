@@ -48,24 +48,26 @@
 		{
 			var eventDate = @ev.Date.ToString("yyyy-MM-dd") + "T12:00:00";
 			var escapedTitle = @ConvertData.EscapeUnicode(ev.Name);
+			var ConvertCategory = @ConvertData.EscapeUnicode(ev.Category);
 			<text>{
 							id: '@ev.Id',
 							title: '@escapedTitle',
 							start: '@eventDate',
 							allDay: true,
-							category: '@ev.Category',
+							extendedProps: {
+								category: '@ConvertCategory',
+							},
 							color: '@Category.GetCategoryColor(ev.Category)'
 							},</text>
 		}
 				],
 				eventClick: function (info) {
 					var event = info.event;
-					var category = document.getElementById('category').value;
 
 					document.getElementById('eventId').value = event.id;
 					document.getElementById('eventName').value = event.title;
 					document.getElementById('eventDate').value = event.startStr;
-					document.getElementById('eventCategory').value = category;
+					document.getElementById('eventCategory').value = event.extendedProps.category;
 
 					if (document.getElementById('popupForm').style.display == 'none') {
 						document.getElementById('addEvent').style.display = 'none';

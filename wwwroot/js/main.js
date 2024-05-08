@@ -3,10 +3,11 @@ const popupForm = document.getElementById('popupForm');
 const eventNameInput = document.getElementById('eventName');
 const eventDateInput = document.getElementById('eventDate');
 const eventCategoryInput = document.getElementById('eventCategory');
+const eventDescriptionInput = document.getElementById('eventDescription');
 
 function clearForm() {
 	eventNameInput.value = '';
-	eventDateInput.value = '';
+	eventDescriptionInput.value = '';
 }
 
 function sendDataAndReload(url, data) {
@@ -41,10 +42,15 @@ document.getElementById('closeFormButton').addEventListener('click', function ()
 });
 
 document.getElementById('addEvent').addEventListener('click', function () {
+	if (!eventDateInput.value) {
+		eventDateInput.value = document.getElementById('date').value;
+	}
+	console.log(eventNameInput.value, eventDateInput.value, eventCategoryInput.value, eventDescriptionInput.value);
 	const eventData = {
 		Name: eventNameInput.value,
 		Date: eventDateInput.value,
-		Category: eventCategoryInput.value
+		Category: eventCategoryInput.value,
+		Description: eventDescriptionInput.value
 	};
 	sendDataAndReload('/Home/AddEvent', eventData);
 });
@@ -55,7 +61,8 @@ document.getElementById('editEvent').addEventListener('click', function () {
 		Id: eventId,
 		Name: eventNameInput.value,
 		Date: eventDateInput.value,
-		Category: eventCategoryInput.value
+		Category: eventCategoryInput.value,
+		Description: eventDescriptionInput.value
 	};
 	sendDataAndReload('/Home/EditEvent', eventData);
 });

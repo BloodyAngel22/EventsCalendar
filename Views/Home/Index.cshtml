@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Event>
+﻿@model IEnumerable<EventModel>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,9 @@
 				<button type="button" id="closeFormButton">x</button>
 				<input type="hidden" id="eventId">
 				<textarea class="input input-text" name="eventName" id="eventName" cols="50" rows="2" placeholder="Название события" minlength="1" maxlength="100"></textarea>
-				<input type="date" id="eventDate" placeholder="Дата" class="input input-date"><br>
+				<textarea class="input input-text" name="eventDescription" id="eventDescription" cols="50" rows="2" placeholder="Описание события" minlength="1" maxlength="100"></textarea>
+				<input type="date" id="eventDate" placeholder="Дата" class="input input-date" value="@DateTime.Now.ToString("yyyy-MM-dd")"><br>
+				<input type="hidden" id="date" value="@DateTime.Now.ToString("yyyy-MM-dd")">
 				<input type="hidden" id="category" value="@Category.Work">
 				<select class="input input-text" name="eventCategory" id="eventCategory">
 					@foreach (var category in Category.Categories)
@@ -47,15 +49,17 @@
 		@foreach (var ev in Model)
 		{
 			var eventDate = @ev.Date.ToString("yyyy-MM-dd") + "T12:00:00";
-			var escapedTitle = @ConvertData.EscapeUnicode(ev.Name);
+			var ConvertTitle = @ConvertData.EscapeUnicode(ev.Name);
 			var ConvertCategory = @ConvertData.EscapeUnicode(ev.Category);
+			var ConvertDescription = @ConvertData.EscapeUnicode(ev.Description);
 			<text>{
 							id: '@ev.Id',
-							title: '@escapedTitle',
+							title: '@ConvertTitle',
 							start: '@eventDate',
 							allDay: true,
 							extendedProps: {
 								category: '@ConvertCategory',
+								description: '@ConvertDescription'
 							},
 							color: '@Category.GetCategoryColor(ev.Category)'
 							},</text>
@@ -66,6 +70,7 @@
 
 					document.getElementById('eventId').value = event.id;
 					document.getElementById('eventName').value = event.title;
+					document.getElementById('eventDescription').value = event.extendedProps.description;
 					document.getElementById('eventDate').value = event.startStr;
 					document.getElementById('eventCategory').value = event.extendedProps.category;
 

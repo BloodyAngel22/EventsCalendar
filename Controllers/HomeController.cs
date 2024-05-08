@@ -17,22 +17,79 @@ public class HomeController : Controller
 
 	public IActionResult Index()
 	{
-		return View(_context.Events.ToList());
+		var events = from ev in _context.Events
+					join desc in _context.EventDescriptions
+					on ev.Id equals desc.EventId
+					select new
+					{
+						Id = ev.Id,
+						Name = ev.Name,
+						Date = ev.Date,
+						Category = ev.Category,
+						Description = desc.Description
+					};
+
+		List<EventModel> eventModels = new();
+		foreach (var ev in events)
+		{
+			eventModels.Add(new EventModel
+			{
+				Id = ev.Id,
+				Name = ev.Name,
+				Date = ev.Date,
+				Category = ev.Category,
+				Description = ev.Description
+			});
+		}
+
+		return View(eventModels);
 	}
 
 	[HttpPost]
-	public async Task AddEvent([FromBody] Event eventModel)
+	public async Task AddEvent([FromBody] EventModel eventModel)
 	{
-		_logger.LogInformation($"{eventModel.Id} {eventModel.Name} {eventModel.Date} {eventModel.Category}");
-		_context.Events.Add(eventModel);
+		_logger.LogInformation($"{eventModel.Id} {eventModel.Name} {eventModel.Date} {eventModel.Category}, {eventModel.Description}");
+
+		var newEvent = new Event
+		{
+			Name = eventModel.Name,
+			Date = eventModel.Date,
+			Category = eventModel.Category
+		};
+
+		_context.Events.Add(newEvent);
+		await _context.SaveChangesAsync();
+
+		_context.EventDescriptions.Add(new EventDescription
+		{
+			EventId = newEvent.Id,
+			Description = eventModel.Description
+		});
 		await _context.SaveChangesAsync();
 	}
 
 	[HttpPost]
-	public async Task EditEvent([FromBody] Event eventModel)
+	public async Task EditEvent([FromBody] EventModel eventModel)
 	{
 		_logger.LogInformation($"{eventModel.Id} {eventModel.Name} {eventModel.Date} {eventModel.Category}");
-		_context.Events.Update(eventModel);
+
+		var _event = _context.Events.Find(eventModel.Id);
+		var eventDescription = _context.EventDescriptions.SingleOrDefault(e => e.EventId == eventModel.Id);
+
+		if (_event == null || eventDescription == null)
+		{
+			_logger.LogWarning("Event or EventDescription not found");
+			return;
+		}
+
+		_event.Name = eventModel.Name;
+		_event.Date = eventModel.Date;
+		_event.Category = eventModel.Category;
+		eventDescription.Description = eventModel.Description;
+
+		_context.Events.Update(_event);
+		_context.EventDescriptions.Update(eventDescription);
+
 		await _context.SaveChangesAsync();
 	}
 
@@ -41,7 +98,16 @@ public class HomeController : Controller
 	{
 		_logger.LogInformation($"{Id}");
 		var eventModel = _context.Events.Find(Id);
+		var eventDescription = _context.EventDescriptions.SingleOrDefault(e => e.EventId == Id);
+
+		if (eventModel == null || eventDescription == null)
+		{
+			_logger.LogWarning("Event or EventDescription not found");
+			return;
+		}
+
 		_context.Events.Remove(eventModel!);
+		_context.EventDescriptions.Remove(eventDescription!);
 		await _context.SaveChangesAsync();
 	}
 
